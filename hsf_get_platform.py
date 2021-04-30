@@ -100,7 +100,7 @@ class HSFPlatform(object):
             patt = re.compile('([0-9]+)\\.([0-9]+)\\.([0-9]+)')
             mobj = patt.match(versioninfo)
             compiler = 'icc' + mobj.group(1)
-        elif ccommand.endswith('cc'):
+        elif ccommand.startswith('gcc'):
             versioninfo = run((ccommand, '-dumpversion'), stdout=PIPE, stderr=STDOUT).stdout.decode("utf-8")
             patt = re.compile('([0-9]+)\\.([0-9]+)\\.([0-9]+)')
             mobj = patt.match(versioninfo)
