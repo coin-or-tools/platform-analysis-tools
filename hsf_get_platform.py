@@ -53,7 +53,7 @@ class HSFPlatform(object):
         elif system == "Windows":
             pass
         else:
-            raise Exception(f"System {system} not supported")
+            raise Exception("System %s not supported" % system)
 
         return (pf+version).lower()
 
