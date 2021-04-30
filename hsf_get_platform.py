@@ -19,12 +19,7 @@ import os
 import platform
 import re
 import sys
-
-try:
-    import distro
-except ImportError:
-    print("Failed to import required Python 'distro' module", file=sys.stderr)
-    sys.exit(1)
+import distro
 
 from argparse import ArgumentParser
 from subprocess import run, PIPE, STDOUT
