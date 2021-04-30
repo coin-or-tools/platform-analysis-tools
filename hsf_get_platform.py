@@ -19,12 +19,7 @@ import os
 import platform
 import re
 import sys
-
-try:
-    import distro
-except ImportError:
-    print("Failed to import required Python 'distro' module", file=sys.stderr)
-    sys.exit(1)
+import distro
 
 from argparse import ArgumentParser
 from subprocess import run, PIPE, STDOUT
@@ -53,7 +48,7 @@ class HSFPlatform(object):
         elif system == "Windows":
             pass
         else:
-            raise f"System {system} not supported"
+            raise Exception("System %s not supported" % system)
 
         return (pf+version).lower()
 
@@ -100,7 +95,7 @@ class HSFPlatform(object):
             patt = re.compile('([0-9]+)\\.([0-9]+)\\.([0-9]+)')
             mobj = patt.match(versioninfo)
             compiler = 'icc' + mobj.group(1)
-        elif ccommand.endswith('cc'):
+        elif ccommand.startswith('gcc'):
             versioninfo = run((ccommand, '-dumpversion'), stdout=PIPE, stderr=STDOUT).stdout.decode("utf-8")
             patt = re.compile('([0-9]+)\\.([0-9]+)\\.([0-9]+)')
             mobj = patt.match(versioninfo)
@@ -126,9 +121,10 @@ class HSFPlatform(object):
         if architecture == None: architecture = HSFPlatform.architecture()
         if compiler     == None: compiler = HSFPlatform.compiler()
         if os           == None: os = HSFPlatform.os()
-        if buildtype    == None: buildtype = "all"
-
-        return (architecture, os, compiler, buildtype)
+        if buildtype    == None:
+            return (architecture, os, compiler)
+        else:
+            return (architecture, os, compiler, buildtype)
 
     @staticmethod
     def full_platform_string(architecture = None,
@@ -139,14 +135,14 @@ class HSFPlatform(object):
         Return the full platform string consisting of
           arch-os-compiler-buildtype
         """
-        return "%s-%s-%s-%s" %HSFPlatform.full_platform(architecture, os, compiler, buildtype)
+        return "-".join(HSFPlatform.full_platform(architecture, os, compiler, buildtype))
 
 ##########################
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("-a", "--architecture", dest="architecture",
                         help="set architecture")
-    parser.add_argument("-b", "--buildtype", dest="buildtype",
+    parser.add_argument("-b", "--buildtype", dest="buildtype", nargs="?",
                         help="set buildtype")
     parser.add_argument("-c", "--compiler", dest="compiler",
                         help="set compiler")
