@@ -126,9 +126,10 @@ class HSFPlatform(object):
         if architecture == None: architecture = HSFPlatform.architecture()
         if compiler     == None: compiler = HSFPlatform.compiler()
         if os           == None: os = HSFPlatform.os()
-        if buildtype    == None: buildtype = "all"
-
-        return (architecture, os, compiler, buildtype)
+        if buildtype    == None:
+            return (architecture, os, compiler)
+        else:
+            return (architecture, os, compiler, buildtype)
 
     @staticmethod
     def full_platform_string(architecture = None,
@@ -139,14 +140,14 @@ class HSFPlatform(object):
         Return the full platform string consisting of
           arch-os-compiler-buildtype
         """
-        return "%s-%s-%s-%s" %HSFPlatform.full_platform(architecture, os, compiler, buildtype)
+        return "-".join(HSFPlatform.full_platform(architecture, os, compiler, buildtype))
 
 ##########################
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("-a", "--architecture", dest="architecture",
                         help="set architecture")
-    parser.add_argument("-b", "--buildtype", dest="buildtype",
+    parser.add_argument("-b", "--buildtype", dest="buildtype", nargs="?",
                         help="set buildtype")
     parser.add_argument("-c", "--compiler", dest="compiler",
                         help="set compiler")
