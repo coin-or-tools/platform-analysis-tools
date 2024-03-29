@@ -43,8 +43,8 @@ class HSFPlatform(object):
                 if "CERN" in platform.linux_distribution()[0]:
                     pf = "slc"
         elif system == "Darwin":
-            pf = "macos10"
-            version = platform.mac_ver()[0].split(".")[1]
+            pf = "macos"
+            version = platform.mac_ver()[0].split(".")[0]
         elif system == "Windows":
             pass
         else:
